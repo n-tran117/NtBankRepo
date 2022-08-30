@@ -5,7 +5,7 @@ public abstract class Account {
 	protected int accountNumber;
 	protected Client client;
 	protected String label;
-	protected double balance;
+	protected Flow balance;
 
 	protected static int accountNumberCounter = 0;
 
@@ -13,15 +13,15 @@ public abstract class Account {
 		this.client = client;
 		this.label = label;
 		accountNumber=accountNumberCounter++;
-		balance = Math.random()*100;
+		//balance = Math.random()*100;
 	}
 
 	public int getaccountNumber() {
 		return accountNumber;
 	}
 
-	public void setbalance(double balance) {
-		balance = balance;
+	public void setbalance(Flow balance) {
+		this.balance = balance;
 	}
 
 	public String getLabel() {
@@ -32,7 +32,7 @@ public abstract class Account {
 		this.label = label;
 	}
 
-	public double getbalance() {
+	public Flow getbalance() {
 		return balance;
 	}
 

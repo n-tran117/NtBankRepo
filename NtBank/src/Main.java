@@ -58,7 +58,7 @@ public class Main {
 	public static void displayHashedAccountCollection(HashMap<Integer, Account> Collection) {
 		System.out.println("Sort");
 		Comparator<Entry<Integer, Account>> byBlance = (entry1, entry2) -> Double
-				.compare(entry1.getValue().getbalance(), entry2.getValue().getbalance());
+				.compare(entry1.getValue().getbalance().getAmount(), entry2.getValue().getbalance().getAmount());
 
 		Collection.entrySet().stream().sorted(byBlance).forEach(System.out::println);
 
