@@ -1,6 +1,6 @@
 package components;
 
-abstract class Account {
+ public abstract class Account {
 	
 	protected int AccountNumber;
 	protected Client client;
@@ -11,9 +11,12 @@ abstract class Account {
 	
 	
 	
-	public Account(String label, Client client) {
-		this.label = label;
+
+
+
+	public Account(Client client, String label) {
 		this.client = client;
+		this.label = label;
 		AccountNumber=AccountNumberCounter++;
 	}
 
