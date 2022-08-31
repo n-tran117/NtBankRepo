@@ -47,6 +47,13 @@ public abstract class Flow {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Flow [identifier=" + identifier + ", amount=" + amount + ", tragetAccountNumber=" + tragetAccountNumber
+				+ ", effect=" + effect + ", flowDate=" + flowDate + ", Comment=" + Comment + "]";
+	}
+
+
 	public void setTragetAccountNumber(int tragetAccountNumber) {
 		this.tragetAccountNumber = tragetAccountNumber;
 	}

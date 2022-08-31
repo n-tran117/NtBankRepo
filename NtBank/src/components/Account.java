@@ -5,7 +5,7 @@ public abstract class Account {
 	protected int accountNumber;
 	protected Client client;
 	protected String label;
-	protected Flow balance;
+	protected Double balance = 0.0;
 
 	protected static int accountNumberCounter = 0;
 
@@ -13,15 +13,10 @@ public abstract class Account {
 		this.client = client;
 		this.label = label;
 		accountNumber=accountNumberCounter++;
-		//balance = Math.random()*100;
 	}
 
 	public int getaccountNumber() {
 		return accountNumber;
-	}
-
-	public void setbalance(Flow balance) {
-		this.balance = balance;
 	}
 
 	public String getLabel() {
@@ -32,25 +27,29 @@ public abstract class Account {
 		this.label = label;
 	}
 
-	public Flow getbalance() {
+	public Double getbalance() {
 		return balance;
 	}
 
-	public void setbalance(String flow) {
-		switch (flow) {
-		case "transfer": {
-
+	public void setbalance(Flow flow) {
+		if (flow.getIdentifier().equals("transfer")) {
+			if(flow.getTragetAccountNumber() == this.accountNumber) {
+				this.balance += flow.getAmount();
+			}else if(((Transfert) flow).getTransferingAccountNumber() == this.accountNumber) {
+				this.balance -= flow.getAmount();
+			}
 		}
-		case "credit": {
-
+		else if (flow.getIdentifier().equals("credit")) {
+			balance+=flow.getAmount();
 		}
-		case "debit": {
-
+		else if (flow.getIdentifier().equals("debit")){
+			balance-=flow.getAmount();
 		}
-
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + flow);
-		}
+		
+	}
+	
+	public void setBalance(Double amount) {
+		balance = amount;
 	}
 
 	public Client getClient() {

@@ -12,4 +12,10 @@ public class Transfert extends Flow{
 		this.transferingAccountNumber = transferingAccountNumber;
 	}
 
+	public int getTransferingAccountNumber() {
+		return transferingAccountNumber;
+	}
+	
+	
+
 }

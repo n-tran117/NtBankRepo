@@ -13,8 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.TreeMap;
-
+import java.util.function.Predicate;
 
 import components.Account;
 import components.Client;
@@ -33,9 +34,12 @@ public class Main {
 		ArrayList<Flow> flowCollection = fillFlowCollection(accountCollection);
 		
 
-		displayClientsCollection(clientsCollection);
-		displayAccountCollection(accountCollection);
-		displayHashedAccountCollection(hashedAccountCollection);
+//		displayClientsCollection(clientsCollection);
+//		displayAccountCollection(accountCollection);
+//		displayFlows(flowCollection);
+		processflows(flowCollection,hashedAccountCollection);
+		//displayHashedAccountCollection(hashedAccountCollection);
+
 
 	}
 
@@ -70,7 +74,8 @@ public class Main {
 
 		ArrayList<Flow> flowCollection = new ArrayList<>();
 		
-		flowCollection.add(new Debit(50, 1, false, new Date(), "50€ Debit"));
+		flowCollection.add(new Debit(5000, 1, false, new Date(), "50€ Debit"));
+//		flowCollection.add(new Debit(4000, 2, false, new Date(), "50€ Debit"));
 		for (Account account : accountCollection) {
 			flowCollection.add(new Credit(100.50, account.getaccountNumber(), false, new Date(), "100.50€ Credit"));
 		}
@@ -78,17 +83,22 @@ public class Main {
 			flowCollection.add(new Credit(1500, account.getaccountNumber(), false, new Date(), "1500€ Credit"));
 		}
 		
-		flowCollection.add(new Transfert(50, 1, false, new Date(), "50€ Transfert from account 1 to 2", 2));
+		flowCollection.add(new Transfert(50, 2, false, new Date(), "50€ Transfert from account 1 to 2", 1));
 
 		return flowCollection;
 	}
 
-	public static void displayHashedAccountCollection(HashMap<Integer, Account> Collection) {
+	public static void displayHashedAccountCollection(HashMap<Integer, Account> collection) {
 		System.out.println("Sort");
+//		HashMap<Integer, Account> tmpCollection = collection;
+//		for (Map.Entry<Integer, Account> entry : tmpCollection.entrySet()) {
+//			entry.getValue().setBalance(Math.random()*1000);
+//		}
+		
 		Comparator<Entry<Integer, Account>> byBlance = (entry1, entry2) -> Double
-				.compare(entry1.getValue().getbalance().getAmount(), entry2.getValue().getbalance().getAmount());
+				.compare(entry1.getValue().getbalance(), entry2.getValue().getbalance());
 
-		Collection.entrySet().stream().sorted(byBlance).forEach(System.out::println);
+		collection.entrySet().stream().sorted(byBlance).forEach(System.out::println);
 
 	}
 
@@ -104,6 +114,30 @@ public class Main {
 		for (Client client : Collection) {
 			System.out.println(client.toString());
 		}
+	}
+	
+	public static void displayFlows(ArrayList<Flow> flowCollection) {
+		System.out.println("Flow");
+		for (Flow flow : flowCollection) {
+			System.out.println(flow.toString());
+		}
+		
+	}
+	
+	public static void processflows(ArrayList<Flow> flowCollection,HashMap<Integer, Account> hashedAccountCollection) {
+		System.out.println("process flows");
+		for (Flow flow : flowCollection) {
+			hashedAccountCollection.get(flow.getTragetAccountNumber()).setbalance(flow);
+		}
+		
+		Comparator<Account> byBlance = (entry1, entry2) -> Double
+				.compare(entry1.getbalance(), entry2.getbalance());
+		
+		hashedAccountCollection.values().stream()
+		.sorted(byBlance)
+		.filter(a -> a.getbalance() < 0)
+		.forEach(a -> System.out.println("Account n°"+a.getaccountNumber()+" have à balance under zero : "+a.getbalance()));
+		
 	}
 
 }
