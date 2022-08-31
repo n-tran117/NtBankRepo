@@ -10,4 +10,10 @@ public class Credit extends Flow{
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public int getTransferingAccountNumber() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

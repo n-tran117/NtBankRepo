@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Transfert extends Flow{
 	
-	private int transferingAccountNumber;
+	protected int transferingAccountNumber;
 
 	public Transfert(double amount, int tragetAccountNumber, boolean effect, Date flowDate,
 			String comment, int transferingAccountNumber) {
@@ -12,6 +12,7 @@ public class Transfert extends Flow{
 		this.transferingAccountNumber = transferingAccountNumber;
 	}
 
+	@Override
 	public int getTransferingAccountNumber() {
 		return transferingAccountNumber;
 	}

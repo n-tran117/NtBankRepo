@@ -87,6 +87,9 @@ public abstract class Flow {
 	public void setComment(String comment) {
 		Comment = comment;
 	}
+
+
+	public abstract int getTransferingAccountNumber();
 	
 	
 

@@ -12,7 +12,7 @@ public abstract class Account {
 	public Account(Client client, String label) {
 		this.client = client;
 		this.label = label;
-		accountNumber=accountNumberCounter++;
+		accountNumber = accountNumberCounter++;
 	}
 
 	public int getaccountNumber() {
@@ -32,22 +32,31 @@ public abstract class Account {
 	}
 
 	public void setbalance(Flow flow) {
-		if (flow.getIdentifier().equals("transfer")) {
-			if(flow.getTragetAccountNumber() == this.accountNumber) {
+		switch (flow.getIdentifier()) {
+		case "transfer": {
+//			System.out.println("transfert :");
+//			System.out.println(((Transfert) flow).getTransferingAccountNumber());
+			if (flow.getTragetAccountNumber() == this.accountNumber) {
 				this.balance += flow.getAmount();
-			}else if(((Transfert) flow).getTransferingAccountNumber() == this.accountNumber) {
+			} else if (((Transfert) flow).getTransferingAccountNumber() == this.accountNumber) {
 				this.balance -= flow.getAmount();
 			}
+			break;
 		}
-		else if (flow.getIdentifier().equals("credit")) {
-			balance+=flow.getAmount();
+		case "credit": {
+			balance += flow.getAmount();
+			break;
 		}
-		else if (flow.getIdentifier().equals("debit")){
-			balance-=flow.getAmount();
+		case "debit": {
+			balance -= flow.getAmount();
+			break;
 		}
-		
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + flow.getIdentifier());
+		}
+
 	}
-	
+
 	public void setBalance(Double amount) {
 		balance = amount;
 	}
