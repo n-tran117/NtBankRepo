@@ -4,7 +4,7 @@ import java.util.Date;
 
 public abstract class Flow {
 	
-	private int identifier;
+	private String identifier;
 	private double amount;
 	private int tragetAccountNumber;
 	private boolean effect;
@@ -12,7 +12,7 @@ public abstract class Flow {
 	private String Comment;
 	
 	
-	public Flow(int identifier, double amount, int tragetAccountNumber, boolean effect, Date flowDate, String comment) {
+	public Flow(String identifier, double amount, int tragetAccountNumber, boolean effect, Date flowDate, String comment) {
 		this.identifier = identifier;
 		this.amount = amount;
 		this.tragetAccountNumber = tragetAccountNumber;
@@ -22,12 +22,12 @@ public abstract class Flow {
 	}
 
 
-	public int getIdentifier() {
+	public String getIdentifier() {
 		return identifier;
 	}
 
 
-	public void setIdentifier(int identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 
