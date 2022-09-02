@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,11 +23,18 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import com.google.gson.Gson;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import components.Account;
 import components.Client;
@@ -40,12 +48,17 @@ public class Main {
 	public static void main(String[] args) {
 
 		ArrayList<Client> clientsCollection = fillClientCollection(5);
-		ArrayList<Account> accountCollection = fillAccountCollection(clientsCollection);
+		ArrayList<Account> accountCollection;
+		
+//		accountCollection = fillAccountCollection(clientsCollection);
+		accountCollection = fillAccountCollectionByXml();
 		HashMap<Integer, Account> hashedAccountCollection = fillHashAccountCollection(accountCollection);
 		ArrayList<Flow> flowCollection;
 
 //		flowCollection = fillFlowCollection(accountCollection);
 		flowCollection = fillFlowCollectionJson();
+
+		
 
 		displayClientsCollection(clientsCollection);
 		displayAccountCollection(accountCollection);
@@ -69,6 +82,41 @@ public class Main {
 		for (Client client : Collection) {
 			accountCollection.add(new Account(client, "account" + client.getClientNumber()) {
 			});
+		}
+
+		return accountCollection;
+	}
+
+	public static ArrayList<Account> fillAccountCollectionByXml() {
+		ArrayList<Account> accountCollection = new ArrayList<>();
+
+		File file = new File("src/ressources/accountCollection.xml");
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
+
+			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = db.parse(file);
+			doc.getDocumentElement().normalize();
+			NodeList nodeList = doc.getElementsByTagName("account");
+			Element eElement;
+			Client tmpClient;
+			for (int itr = 0; itr < nodeList.getLength(); itr++) {
+				Node node = nodeList.item(itr);
+				System.out.println("\nNode Name :" + node.getNodeName());
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					eElement = (Element) node;
+					tmpClient = new Client(eElement.getElementsByTagName("name").item(0).getTextContent(),
+							eElement.getElementsByTagName("firstName").item(0).getTextContent());
+		
+					accountCollection.add(new Account(tmpClient, eElement.getElementsByTagName("label").item(0).getTextContent()) {
+					}) ;
+
+				}
+			}
+
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		return accountCollection;
@@ -121,7 +169,6 @@ public class Main {
 				}
 			});
 
-
 		} catch (Exception e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -132,31 +179,27 @@ public class Main {
 
 	public static Flow parseFlow(JSONObject data) throws ParseException {
 		Flow flow;
-		switch ((String)data.get("identifier")) {
+		switch ((String) data.get("identifier")) {
 		case "transfer": {
-			
-			flow = new Transfert((Double)data.get("amount"),
-			 (int)(long)data.get("tragetAccountNumber"),
-			 (boolean)data.get("effect"),
-			 new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
-			 (String)data.get("comment"),
-			 (int)(long)data.get("transferingAccountNumber"));
+
+			flow = new Transfert((Double) data.get("amount"), (int) (long) data.get("tragetAccountNumber"),
+					(boolean) data.get("effect"),
+					new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
+					(String) data.get("comment"), (int) (long) data.get("transferingAccountNumber"));
 			break;
 		}
 		case "credit": {
-			flow = new Credit((Double)data.get("amount"),
-			 (int)(long)data.get("tragetAccountNumber"),
-			 (boolean)data.get("effect"),
-			 new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
-			 (String)data.get("comment"));
+			flow = new Credit((Double) data.get("amount"), (int) (long) data.get("tragetAccountNumber"),
+					(boolean) data.get("effect"),
+					new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
+					(String) data.get("comment"));
 			break;
 		}
 		case "debit": {
-			flow = new Debit((Double)data.get("amount"),
-			 (int)(long)data.get("tragetAccountNumber"),
-			 (boolean)data.get("effect"),
-			 new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
-			 (String)data.get("comment"));
+			flow = new Debit((Double) data.get("amount"), (int) (long) data.get("tragetAccountNumber"),
+					(boolean) data.get("effect"),
+					new SimpleDateFormat("dd/MM/yyyy").parse((String) data.get("flowDate")),
+					(String) data.get("comment"));
 			break;
 		}
 		default:
@@ -207,9 +250,9 @@ public class Main {
 		for (Flow flow : flowCollection) {
 			hashedAccountCollection.get(flow.getTragetAccountNumber()).setbalance(flow);
 		}
-		
+
 		ArrayList<Flow> transfere = new ArrayList<>();
-		//System.out.println(transfere);
+		// System.out.println(transfere);
 
 		Comparator<Account> byBlance = (entry1, entry2) -> Double.compare(entry1.getbalance(), entry2.getbalance());
 

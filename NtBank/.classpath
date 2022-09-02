@@ -6,7 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/boulot/javaLibrarys/gson-2.8.2.jar"/>
-	<classpathentry kind="lib" path="D:/boulot/javaLibrarys/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/boulot/eclipseWorkspace/NtBankrepository/NtBank/javaLibrarys/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
